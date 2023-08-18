@@ -23,53 +23,54 @@ class _LoginScreenState extends State<LoginScreen> {
       //TODO uncomment loader overlay when done mock to show loading
       
       // context.loaderOverlay.show();
-      await context.read<AppState>().login(_formData).then(
-        (value) {
-          // context.loaderOverlay.hide();
-          Navigator.of(context).pushNamed(HomeScreen.id);
-        },
-        onError: (object) {
-          //TODO show error here
-        }
-      );
+      try {
+        await context.read<AppState>().login(_formData);
+        print("okay");
+      } catch(e) {
+        print("have error");
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "hello".tr()
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: "email"
-                ),
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: "password"
-                ),
-              ),
+     return Builder(
+       builder: (context) {
+         return Scaffold(
+          body: SafeArea(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "hello".tr()
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: "email"
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: "password"
+                    ),
+                  ),
 
-              ElevatedButton(
-                onPressed: _onLogin , 
-                child: const Text(
-                  "Login"
-                )
-              )
+                  ElevatedButton(
+                    onPressed: _onLogin , 
+                    child: const Text(
+                      "Login"
+                    )
+                  )
 
 
-            ],
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
     );
+       }
+     );
   }
 }

@@ -39,20 +39,37 @@ class AppState extends ChangeNotifier {
 
   Future login(Map<String,dynamic> data) async {
     try {
-      final Response response = await ApiService.fetchApi(
-        method: Method.get, 
-        path: ApiConfig.login, 
-        data: data,
-        mockAction: "userLogin"
+      await Future.wait(
+        [
+          ApiService.fetchApi(
+            method: Method.get, 
+            path: "https://www.google.com/", 
+            data: data,
+          ).then((value) {
+            print("complete 1");
+          }),
+          ApiService.fetchApi(
+            method: Method.get, 
+            path: "https://www.google.com/", 
+            data: data,
+          ).then((value) => print("complete 2")),
+        ]
       );
-      final body =  jsonDecode(response.body);
-      currentUser = UserModel.fromJson(body);
-      boxAppData.put("accessToken", currentUser.accessToken);
-      notifyListeners();
-      Logger.log(currentUser);
+       
+      // final Response response = await ApiService.fetchApi(
+      //   method: Method.get, 
+      //   path: ApiConfig.login, 
+      //   data: data,
+      // );
+      // final body =  jsonDecode(response.body);
+      // currentUser = UserModel.fromJson(body);
+      // boxAppData.put("accessToken", currentUser.accessToken);
+      // notifyListeners();
+      // Logger.log(currentUser);
     } catch(e) {
+      Logger.log("dkahdhsaddkb");
       Logger.log(e);
-      return Future.error(e);
+      rethrow;
     }
   } 
 
