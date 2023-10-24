@@ -38,7 +38,21 @@ class MockService {
       callBack: Future<Response>.sync(() {
         return Response(jsonEncode(userData), 200);
       })
-    )
+    ),
+    MockCase(
+      name: "UnAuth", 
+      description: "UnAuth", 
+      callBack: Future<Response>.sync(() {
+        return Response(jsonEncode(userData), 401);
+      })
+    ),
+    MockCase(
+      name: "Server Err", 
+      description: "Server err", 
+      callBack: Future<Response>.sync(() {
+        return Response(jsonEncode({"title": "server err"}), 500);
+      })
+    ),
   ];
 
   late final Map<String,List<MockCase>> listAction = {

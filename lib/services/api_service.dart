@@ -78,26 +78,33 @@ class ApiService {
       late final http.Response response;
       if(mockAction != null && navigatorKey.currentContext!= null) {
         final callback = await MockService().showMockPicker(mockAction, navigatorKey.currentContext!);
-        return await callback;
+        response =  await callback;
+      } else {
+        switch (method){
+          case Method.get:
+            response = await _get(path, header);
+            break;
+          case Method.post:
+            response = await _post(path, data, header);
+            break;
+          case Method.put:
+            response = await _put(path, data, header);
+            break;
+          case Method.delete:
+            response = await _delete(path, data, header);
+            break;
+        }
       }
-      switch (method){
-        case Method.get:
-          response = await _get(path, header);
-          break;
-        case Method.post:
-          response = await _post(path, data, header);
-          break;
-        case Method.put:
-          response = await _put(path, data, header);
-          break;
-        case Method.delete:
-          response = await _delete(path, data, header);
-          break;
-      }
-      if(response.statusCode >= 400) completer.completeError(jsonDecode(response.body)['title']);
+      
       if(response.statusCode == 401) throw RefreshException();
+      if(response.statusCode >= 400) {
+        completer.completeError(jsonDecode(response.body)['title']);
+      } else {
+        completer.complete(response);
+      }
+      
       // return response;
-      completer.complete(response);
+      
     } on SocketException {
       _apiNoInternetHandler.showNoInternetDialog(
         cancelFunction: () async {
@@ -115,10 +122,10 @@ class ApiService {
       Logger.log("should response error");
     } on RefreshException {
       //TODO add logic to refresh access token
-      // rethrow;
+      rethrow;
     } on TimeoutException {
       //TODO write logic here
-      // rethrow;
+      rethrow;
     }
     return await completer.future;
   }
